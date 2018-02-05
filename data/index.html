@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html charset="UTF-8">
+    <head>
+        <meta charset="UTF-8"/>
+        <title>Timelapse Setup</title>
+    </head>
+<body>
+
+<form action="/action_page.php">
+    <table>
+        <tr>
+            <td>Number of Images</td>
+            <td><input type="text" name="n_img" value="2000" style="width:80px"></td>
+        </tr>
+        <tr>
+            <td>Frequency</td>
+            <td><input type="text" name="freq" value="1" style="width:80px"></td>
+        </tr>
+        <tr>
+            <td><input type="submit" value="Validate" style="height:20px;width:80px"></td>
+            <td><input type="submit" value="Start" style="height:20px;width:80px" disabled></td>
+            <td>
+                <input list="modifier" name="freq_mod" style="width:60px">
+                <datalist id="modifier">
+                    <option value="/10">
+                    <option value="/100">
+                    <option value="/1000">
+                </datalist>
+                <td>Hz</td>
+            </td>
+        </tr>
+    </table>
+</form> 
+</body>
+</html>
