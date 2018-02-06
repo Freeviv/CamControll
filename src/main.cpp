@@ -111,7 +111,16 @@ void setup() {
         Serial.println("Mounting filesystem");
         SPIFFS.begin();
         Serial.print("Required files are ");
-        Serial.println(checkFilesSPIFFS() ? "available." : "not available!");
+        if(checkFilesSPIFFS())
+        {
+            Serial.println("available.");
+        }
+        else
+        {
+            Serial.println("not available.");
+            ESP.deepSleep(UINT32_MAX);
+        }
+
 
         setupWifi();
 
