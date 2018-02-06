@@ -5,10 +5,51 @@
 
 #include "FS.h" // SPIFFS
 
+#include "crc.h"
+
 const char *ssid = "ESP8266_AP";
 const char *passwd = "12345678";
 
 ESP8266WebServer server(80);
+
+enum FREQ_MOD_OP
+{
+    MULTIPLY = 0,
+    DIVIDE
+};
+
+struct timelapse_config_t
+{
+    uint32 num_img;
+    double freq;
+    uint32 operant;
+    FREQ_MOD_OP op : 2;
+    bool startServer;
+    bool deepSleep;
+    crc checksum;
+} __attribute__((packed));
+
+
+
+timelapse_config_t tlc;
+bool config_existing;
+
+
+
+void calculate_config_crc()
+{
+    tlc.checksum = crcSlow((uint8_t*)&tlc,sizeof(timelapse_config_t) - sizeof(crc));
+}
+
+bool validate_config_crc()
+{
+    return tlc.checksum == crcSlow((uint8_t*)&tlc,sizeof(timelapse_config_t) - sizeof(crc));
+}
+
+void start_timelapse()
+{
+    ESP.rtcUserMemoryWrite(0,(uint32_t*)&tlc,sizeof(timelapse_config_t));
+}
 
 void setupWifi()
 {
@@ -28,18 +69,21 @@ bool checkFilesSPIFFS()
         SPIFFS.exists("/index.html");
 }
 
-void handleRoot()
+void handleIndex()
 {
-    Serial.println("Started handle root...");
-    File root = SPIFFS.open("/index.html","r");
-    size_t size = root.size();
-    char *r = new char[size + 1];
-    r[size] = '\0';
-    root.readBytes(r,size);
-    root.close();
-    server.send(200,"text/html",String(r));
-    delete[] r;
-    Serial.println("Finished handle root...");
+    // n_img=2000&freq=1&freq_mod=%2F100
+    if(server.arg("n_img")== ""      ||
+       server.arg("freq")== ""       ||
+       server.arg("freq_mod")== ""   ||
+       server.arg("deepSleep") == "" ||
+       server.arg("webserver") == "")
+    {
+        server.sendHeader("Location", String("/"), true);
+        server.send ( 302, "text/plain", "");
+    }
+    int n_img = atoi(server.arg("n_img").c_str());
+    double frequency = atof(server.arg("freq").c_str());
+    int operant = atoi(server.arg("freq_mod").substring(1).c_str());
 }
 
 void handleNotFound()
@@ -50,21 +94,41 @@ void handleNotFound()
 void setup() {
     Serial.begin(115200);
     Serial.println();
-    Serial.println("Mounting filesystem");
-    SPIFFS.begin();
-    Serial.print("Required files are ");
-    Serial.println(checkFilesSPIFFS() ? "available." : "not available!");
 
-    setupWifi();
+    // try reading existing configuration
+    ESP.rtcUserMemoryRead(0,(uint32_t*)&tlc,sizeof(timelapse_config_t));
+    config_existing = validate_config_crc();
+    if(config_existing)
+    {
+        Serial.println("Found existing configuration. Reusing it...");
+    } else 
+    {
+        Serial.println("No configuration found!");
+    }
 
-    Serial.println("Started server setup...");
-    server.on("/",handleRoot);
-    server.onNotFound(handleNotFound);
-    server.begin();
-    Serial.println("Finished server setup...");
+    if(!config_existing || tlc.startServer)
+    {
+        Serial.println("Mounting filesystem");
+        SPIFFS.begin();
+        Serial.print("Required files are ");
+        Serial.println(checkFilesSPIFFS() ? "available." : "not available!");
+
+        setupWifi();
+
+        Serial.println("Started server setup...");
+        // register all possible requests
+        server.serveStatic("/",SPIFFS,"/index.html");
+        server.serveStatic("/style.css",SPIFFS,"/style.css");
+        server.on("/index.html",handleIndex);
+        server.onNotFound(handleNotFound);
+        server.begin();
+        Serial.println("Finished server setup...");
+    }
 }
 
 void loop() {
-    // put your main code here, to run repeatedly:
-    server.handleClient();
+    if(!config_existing || tlc.startServer)
+    {
+        server.handleClient();
+    }
 }
