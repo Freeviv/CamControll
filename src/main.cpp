@@ -7,6 +7,10 @@
 
 #include "crc.h"
 
+
+#define FOCUS D5
+#define TRIGGER D6
+
 const char *ssid = "ESP8266_AP";
 const char *passwd = "12345678";
 
@@ -21,11 +25,10 @@ struct timelapse_config_t
 } __attribute__((packed));
 
 
-
 timelapse_config_t tlc;
 bool config_existing;
-
-
+bool ts_started = false;
+unsigned long last_img;
 
 void calculate_config_crc()
 {
@@ -35,6 +38,15 @@ void calculate_config_crc()
 bool validate_config_crc()
 {
     return tlc.checksum == crcSlow((uint8_t*)&tlc,sizeof(timelapse_config_t) - sizeof(crc));
+}
+void trigger_photo()
+{
+    digitalWrite(FOCUS,HIGH);
+    delay(200);
+    digitalWrite(TRIGGER,HIGH);
+    delay(200);
+    digitalWrite(FOCUS,LOW);
+    digitalWrite(TRIGGER,LOW);
 }
 
 void store_config()
@@ -50,8 +62,8 @@ void setupWifi()
     WiFi.softAPConfig(addr,addr,sub);
     Serial.println(WiFi.softAP(ssid,passwd) ? "Ready" : "Failded!");
     IPAddress myIP = WiFi.softAPIP();
-	Serial.print("AP IP address: ");
-	Serial.println(myIP);
+  Serial.print("AP IP address: ");
+  Serial.println(myIP);
 }
 
 bool checkFilesSPIFFS()
@@ -70,6 +82,7 @@ void handleIndex()
     {
         server.sendHeader("Location", String("/"), true);
         server.send ( 302, "text/plain", "");
+        return;
     }
     int fps = atoi(server.arg("fps").c_str());
     int length = atoi(server.arg("length").c_str());
@@ -95,6 +108,7 @@ void handleIndex()
     store_config();
     server.sendHeader("Location", String("/started.html"), true);
     server.send(303);
+    ts_started = true;
 }
 
 void handleNotFound()
@@ -106,6 +120,18 @@ void handleNotFound()
 void setup() {
     Serial.begin(115200);
     Serial.println();
+    Serial.println("Startup");
+
+    Serial.print("Setting up pin mode");
+    pinMode(FOCUS,OUTPUT);
+    Serial.print(".");
+    pinMode(TRIGGER,OUTPUT);
+    Serial.print(".");
+    delay(200);
+    digitalWrite(FOCUS,LOW);
+    Serial.print(".");
+    digitalWrite(TRIGGER,HIGH);
+    Serial.println(" finished!");
 
     // try reading existing configuration
     ESP.rtcUserMemoryRead(0,(uint32_t*)&tlc,sizeof(timelapse_config_t));
@@ -148,6 +174,10 @@ void setup() {
         server.begin();
         Serial.println("Finished server setup...");
     }
+    else
+    {
+        Serial.println("Timelapse mode...");
+    }
 }
 
 void loop() {
@@ -155,9 +185,14 @@ void loop() {
     {
         server.handleClient();
     }
-    else
+    if(ts_started && last_img == 0 || millis() - last_img >= tlc.ttp * 1000 * 1000)
     {
+        last_img = millis();
+        Serial.printf("Taking photo...");
         unsigned long t = millis();
-        
+        trigger_photo();
+        tlc.processed++;
+        calculate_config_crc();
+        store_config();
     }
 }

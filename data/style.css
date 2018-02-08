@@ -37,10 +37,6 @@ div.form
     /* Other styles here */
 }
 
-$progressBarColour: #F2F2F2;
-$progressValueColour: #17BAB3;
-
-
 .Progress-label {
     font-size: 1em;
     font-family: Helvetica, sans-serif;
