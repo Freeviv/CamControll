@@ -12,20 +12,11 @@ const char *passwd = "12345678";
 
 ESP8266WebServer server(80);
 
-enum FREQ_MOD_OP
-{
-    MULTIPLY = 0,
-    DIVIDE
-};
-
 struct timelapse_config_t
 {
-    uint32 num_img;
-    double freq;
-    uint32 operant;
-    FREQ_MOD_OP op : 2;
-    bool startServer;
-    bool deepSleep;
+    uint32_t num_img;
+    uint32_t processed;
+    uint32_t ttp; // time to picture
     crc checksum;
 } __attribute__((packed));
 
@@ -46,7 +37,7 @@ bool validate_config_crc()
     return tlc.checksum == crcSlow((uint8_t*)&tlc,sizeof(timelapse_config_t) - sizeof(crc));
 }
 
-void start_timelapse()
+void store_config()
 {
     ESP.rtcUserMemoryWrite(0,(uint32_t*)&tlc,sizeof(timelapse_config_t));
 }
@@ -71,24 +62,45 @@ bool checkFilesSPIFFS()
 
 void handleIndex()
 {
-    // n_img=2000&freq=1&freq_mod=%2F100
-    if(server.arg("n_img")== ""      ||
-       server.arg("freq")== ""       ||
-       server.arg("freq_mod")== ""   ||
-       server.arg("deepSleep") == "" ||
-       server.arg("webserver") == "")
+    // fps=60&length=300&speedup=30&ttype=finished
+    if(server.arg("fps")== ""     ||
+       server.arg("length")== ""  ||
+       server.arg("speedup")== "" ||
+       server.arg("ttype") == "")
     {
         server.sendHeader("Location", String("/"), true);
         server.send ( 302, "text/plain", "");
     }
-    int n_img = atoi(server.arg("n_img").c_str());
-    double frequency = atof(server.arg("freq").c_str());
-    int operant = atoi(server.arg("freq_mod").substring(1).c_str());
+    int fps = atoi(server.arg("fps").c_str());
+    int length = atoi(server.arg("length").c_str());
+    if(server.arg("ttype").compareTo("finished") == 0)
+    {
+        Serial.println("Type: finished");
+        tlc.num_img = fps * length;
+        tlc.ttp = length * fps;
+    }
+    else
+    {
+        Serial.println("Type: raw");
+        tlc.ttp = fps;
+        tlc.num_img = length;
+    }
+    Serial.print("Config:\nNumber of images: ");
+    Serial.println(tlc.num_img);
+    Serial.print("Take every ");
+    Serial.print(tlc.ttp);
+    Serial.println(" seconds an image");
+    tlc.processed = 0;
+    calculate_config_crc();
+    store_config();
+    server.sendHeader("Location", String("/started.html"), true);
+    server.send(303);
 }
 
 void handleNotFound()
 {
-
+    server.sendHeader("Location",String("/fnf.html"),true);
+    server.send(302);
 }
 
 void setup() {
@@ -106,7 +118,7 @@ void setup() {
         Serial.println("No configuration found!");
     }
 
-    if(!config_existing || tlc.startServer)
+    if(!config_existing)
     {
         Serial.println("Mounting filesystem");
         SPIFFS.begin();
@@ -128,6 +140,9 @@ void setup() {
         // register all possible requests
         server.serveStatic("/",SPIFFS,"/index.html");
         server.serveStatic("/style.css",SPIFFS,"/style.css");
+        server.serveStatic("/fnf.html",SPIFFS,"/fnf.html");
+        server.serveStatic("/started.html",SPIFFS,"/started.html");
+        server.serveStatic("/script_collection.js",SPIFFS,"/script_collection.js");
         server.on("/index.html",handleIndex);
         server.onNotFound(handleNotFound);
         server.begin();
@@ -136,8 +151,13 @@ void setup() {
 }
 
 void loop() {
-    if(!config_existing || tlc.startServer)
+    if(!config_existing)
     {
         server.handleClient();
+    }
+    else
+    {
+        unsigned long t = millis();
+        
     }
 }
