@@ -6,85 +6,39 @@
         <link rel="stylesheet" href="style.css">
         <link rel="stylesheet" href="/style.css">
         <title>Timelapse Setup</title>
-        <script>
-            function validateForm() {
-                var n_img = document.forms["config"]["n_img"].value;
-                var f = document.forms["config"]["freq"].value;
-                var fm = document.forms["config"]["freq_mod"].value;
-                var warning = "Form is incorrect.";
-                var errored = false;
-                if (n_img == "") {
-                    warning += "\nNo image number selected."
-                    errored = true;
-                } else {
-                    if(parseInt(n_img) <= 0) {
-                        warning += "\nImage number is invalid!"
-                        errored = true;
-                    }
-                }
-                if(f == "") {
-                    warning += "\nNo frequency selected."
-                    errored = true;
-                } else {
-                    if(parseFloat(f) < 0.0) {
-                        warning += "\nFrequency value invalid!"
-                        errored = true;
-                    }
-                }
-                if(fm == "") {
-                    warning += "\nNo frequency modifier selected."
-                    errored = true;
-                }
-                else {
-                    if(parseInt(fm) < 1) {
-                        warning += "\nFrequency modifier value invalid!"
-                        errored = true;
-                    }
-                }
-                if(errored) {
-                    alert(warning)
-                    return false;
-                }
-            }
-        </script>
+        <script src="script_collection.js"></script>
     </head>
 <body class=index>
 <h1 class=index>Timelapse Setup</h1>
 <div class=form>
-    <form name="config" action="/index.html" onsubmit="return validateForm()" align="left">
+    <form name="config" action="/index.html" align="left">
         <table align="center">
             <tr>
-                <td>Img Count</td>
-                <td><input type="text" name="n_img" value="2000" style="width:60px"></td>
+                <td id="rate">Take image every</td>
+                <td><input type="text" name="fps" value="60" style="width:60px"></td>
+                <td id="secs">seconds</td>
             </tr>
             <tr>
-                <td>Frequency</td>
-                <td><input type="text" name="freq" value="1" style="width:60px"></td>
-                <td>
-                    <input list="modifier" name="freq_mod" style="width:60px">
-                    <datalist id="modifier">
-                        <option value="/10">
-                        <option value="/100">
-                        <option value="/1000">
-                    </datalist>
-                    <td>Hz</td>
-                </td>
+                <td>Length</td>
+                <td><input type="text" name="length" value="300" style="width:60px"></td>
+            </tr>
+            <tr id="speedUp" style="visibility: hidden;">
+                    <td>Desired Speedup</td>
+                    <td><input type="text" name="speedup" value="30" style="width:60px"></td>
             </tr>
             <tr>
-                <td><input type="submit" value="Validate" style="height:20px;width:60px"></td>
-                <td></td>
+                <td><input type="radio" name="ttype" value="finished" onclick="return enableSpeedup(false)">Finished length</td>
+            </tr>
+            <tr>
+                <td><input type="radio" name="ttype" value="raw" checked="checked" onclick="return enableSpeedup(true)">Raw length</td>
+            </tr>
+            <tr>
+                <td><input type="button" value="Validate" style="height:20px;width:60px" onclick="return validateForm()"></td>
                 <td><input type="submit" value="Start" style="height:20px;width:60px" disabled></td>
-            </tr>
         </table>
         <br>
-        <input type="checkbox" name="deepSleep" value="1">Use deep sleep between two images.<br>
-        <b style="color: red;">Warning!</b> If this option is used, the webserver will not start! To change settings
-        you have to reset the &micro;C and restart the timelapse.<br>
-        <br>
-        <input type="checkbox" name="webserver" value="1">Use webserver while timelapse<br>
-        If this option is used, the webserver will be running during the timelapse,
-        possibly consuming more power. You may see a progressbar.<br>
     </form>
+    <p id="js_msg"></p>
 </div>
 </body>
 </html>
