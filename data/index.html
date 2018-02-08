@@ -2,13 +2,12 @@
 <html charset="UTF-8">
     <head>
         <meta charset="UTF-8"/>
-        <!-- two types for both, spiffs and normal filesystems --><link rel="stylesheet" href="style.css">
+        <!-- two types for both, spiffs and normal filesystems -->
         <link rel="stylesheet" href="style.css">
-        <link rel="stylesheet" href="/style.css">
         <title>Timelapse Setup</title>
         <script src="script_collection.js"></script>
     </head>
-<body class=index>
+<body class=index onload="onLoad()">
 <h1 class=index>Timelapse Setup</h1>
 <div class=form>
     <form name="config" action="/index.html" align="left">
@@ -34,11 +33,11 @@
             </tr>
             <tr>
                 <td><input type="button" value="Validate" style="height:20px;width:60px" onclick="return validateForm()"></td>
-                <td><input type="submit" value="Start" style="height:20px;width:60px" disabled></td>
+                <td><input id="start" type="submit" value="Start" style="height:20px;width:60px"></td>
         </table>
         <br>
     </form>
-    <p id="js_msg"></p>
+    <p id="js_msg" style="text-align: left";></p>
 </div>
 </body>
 </html>
