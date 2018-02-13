@@ -1,0 +1,6 @@
+[submodule "src/bspline"]
+	path = src/bspline
+	url = https://github.com/ncareol/bspline.git
+[submodule "src/spline"]
+	path = src/spline
+	url = https://github.com/ttk592/spline.git
