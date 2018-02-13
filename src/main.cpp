@@ -62,8 +62,8 @@ void setupWifi()
     WiFi.softAPConfig(addr,addr,sub);
     Serial.println(WiFi.softAP(ssid,passwd) ? "Ready" : "Failded!");
     IPAddress myIP = WiFi.softAPIP();
-  Serial.print("AP IP address: ");
-  Serial.println(myIP);
+    Serial.print("AP IP address: ");
+    Serial.println(myIP);
 }
 
 bool checkFilesSPIFFS()
@@ -109,6 +109,11 @@ void handleIndex()
     server.sendHeader("Location", String("/started.html"), true);
     server.send(303);
     ts_started = true;
+}
+
+void handle_direct_control()
+{
+    return;
 }
 
 void handleNotFound()
@@ -159,7 +164,6 @@ void setup() {
             ESP.deepSleep(UINT32_MAX);
         }
 
-
         setupWifi();
 
         Serial.println("Started server setup...");
@@ -170,6 +174,7 @@ void setup() {
         server.serveStatic("/started.html",SPIFFS,"/started.html");
         server.serveStatic("/script_collection.js",SPIFFS,"/script_collection.js");
         server.on("/index.html",handleIndex);
+        server.on("/control.html",HTTPMethod::HTTP_POST,handle_direct_control);
         server.onNotFound(handleNotFound);
         server.begin();
         Serial.println("Finished server setup...");

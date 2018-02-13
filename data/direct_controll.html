@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html charset="UTF-8">
+<head>
+    <meta charset="UTF-8"/>
+    <!-- two types for both, spiffs and normal filesystems -->
+    <link rel="stylesheet" href="style.css">
+    <title>Timelapse Setup</title>
+    <script src="script_collection.js"></script>
+</head>
+<body class=index>
+    <div id="hidden_form_container" style="display:none;"></div>
+    <h1 class=index>Direct controll</h1>
+    <!-- TODO: custom buttons -->
+    <form name="config" align="left">
+    <table align="center">
+        <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td><input class=dc type="button" value="+10°" onclick="return directControl('PITCH',10)"></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td><input class=dc type="button" value="+1°" onclick="return directControl('PITCH',1)"></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td><input class=dc type="button" value="+0.1°" onclick="return directControl('PITCH',0.1)"></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td><input class=dc type="button" value="-100mm" onclick="return directControl('LEFT',100)"></td>
+            <td><input class=dc type="button" value="-10mm" onclick="return directControl('LEFT',10)"></td>
+            <td><input class=dc type="button" value="-1mm" onclick="return directControl('LEFT',1)"></td>
+            <td><input class=dc type="button" value="Center" onclick="return directControl('CENTER',1)"></td>
+            <td><input class=dc type="button" value="1mm" onclick="return directControl('RIGHT',1)"></td>
+            <td><input class=dc type="button" value="10mm" onclick="return directControl('RIGHT',10)"></td>
+            <td><input class=dc type="button" value="100mm" onclick="return directControl('RIGHT',100)"></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td><input class=dc type="button" value="-0.1°" onclick="return directControl('PITCH',-0.1)"></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td><input class=dc type="button" value="+1°" onclick="return directControl('PITCH',1)"></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td><input class=dc type="button" value="10°" onclick="return directControl('PITCH',-10)"></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td colspan="2"><input class=dce type="button" value="Add point" onclick="return directControl('ADD',1)"></td>
+            <td colspan="3" align="center"><input class=dce type="button" value="Remove point" onclick="return directControl('REMOVE',1)"></td>
+            <td colspan="2"><input class=dce type="button" value="Clear all points" onclick="return directControl('REMOVE',0)"></td>
+        </tr>
+    </table>
+</form>
+</body>

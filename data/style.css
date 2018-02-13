@@ -16,6 +16,18 @@ body.index
     border-style: solid;
 }
 
+.dc
+{
+  width: 60px;
+  height: 60px;
+}
+
+.dce
+{
+  width: 120px;
+  height: 60px;
+}
+
 h1.index
 {
     color: darkgray;
