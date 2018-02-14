@@ -113,7 +113,9 @@ void handleIndex()
 
 void handle_direct_control()
 {
-    return;
+    printf("Op: %s\tVal: %s\n",server.arg("operator").c_str(),server.arg("value").c_str());
+    server.sendHeader("Location",String("/control.html"),true);
+    server.send(302);
 }
 
 void handleNotFound()
@@ -173,6 +175,7 @@ void setup() {
         server.serveStatic("/fnf.html",SPIFFS,"/fnf.html");
         server.serveStatic("/started.html",SPIFFS,"/started.html");
         server.serveStatic("/script_collection.js",SPIFFS,"/script_collection.js");
+        server.serveStatic("/control.html",SPIFFS,"/direct_controll.html");
         server.on("/index.html",handleIndex);
         server.on("/control.html",HTTPMethod::HTTP_POST,handle_direct_control);
         server.onNotFound(handleNotFound);
@@ -190,7 +193,7 @@ void loop() {
     {
         server.handleClient();
     }
-    if(ts_started && last_img == 0 || millis() - last_img >= tlc.ttp * 1000 * 1000)
+    if(ts_started && (last_img == 0 || millis() - last_img >= tlc.ttp * 1000 * 1000))
     {
         last_img = millis();
         Serial.printf("Taking photo...");
