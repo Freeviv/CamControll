@@ -33,6 +33,7 @@ install:
 
 script:
     - platformio run
+    - python prepare_fs.py
     - platformio run --target buildfs
 
 
