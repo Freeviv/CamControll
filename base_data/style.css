@@ -5,15 +5,15 @@ html {
 
 body.index
 {
-    min-height: 60%;
-    width: 40%;
+    min-height: 80%;
+    width: 70%;
     /* to centre page on screen*/
     margin-left: auto;
     margin-right: auto;
 
-    border-width: 10px;
-    border-color: lightgray;
-    border-style: solid;
+    border-width: 8px;
+    border-color: #333;
+    border-style: none solid solid solid;
 }
 
 .dc
@@ -85,4 +85,13 @@ color: white;
 /* Right-aligned section inside the top navigation */
 .topnav-right {
 float: right;
+}
+
+.control-button:hover
+{
+    opacity: 0.8;
+    transition: 100ms;
+  transition-timing-function: ease-in-out;
+  -webkit-transition: 100ms;
+  -webkit-transition-timing-function: ease-in-out;
 }

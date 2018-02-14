@@ -9,8 +9,8 @@
 </head>
 <body class=index>
 <div class="topnav">
-    <a class="active" href="#home">Home</a>
-    <a href="#control">Control</a>
+    <a href="#home">Home</a>
+    <a class="active" href="#control">Control</a>
     <div class="topnav-right">
         <a href="#about">About</a>
     </div>
@@ -19,6 +19,7 @@
 <div id="hidden_form_container" style="display:none;"></div>
 <h1 class=index>Direct controll</h1>
 <!-- TODO: custom buttons -->
+<!--
 <form name="config" align="left">
     <table align="center">
         <tr>
@@ -91,4 +92,28 @@
         </tr>
     </table>
 </form>
+-->
+<div align="center">
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="40%"  viewBox="0 0 400 400" xml:space="preserve">
+    <defs>
+        <path id="con_small" d="M4,38 h15 a25,25 0 0,1 25,-25 v-15 a40,40 0 0,0 -40,40 Z" style="fill:#333;fill-opacity: 1;stroke:#333;stroke-width: 3;"/>
+        <path id="con_medium" d="M4,38 h15 a45,45 0 0,1 45,-45 v-15 a60,60 0 0,0 -60,60 Z" style="fill:#333;fill-opacity: 1;stroke:#333;stroke-width: 3"/>
+        <path id="con_big" d="M4,38 h15 a65,65 0 0,1 65,-65 v-15 a80,80 0 0,0 -80,80 Z" style="fill:#333;fill-opacity: 1;stroke:#333;stroke-width: 3"/>
+        <path id="center" d="M4,38 a15,15 0 1,1 30,0 a15,15 0 1,1 -30,0" style="fill:#333;fill-opacity: 1;stroke:#333;stroke-width: 3"/>
+    </defs>
+    <!-- Top buttons -->
+    <use class="control-button" transform="translate(142,0) rotate(45) scale(2,2)" xlink:href="#con_big"></use>
+    <use class="control-button" transform="translate(171,30) rotate(45) scale(2,2)" xlink:href="#con_medium"></use>
+    <use class="control-button" transform="translate(200,60) rotate(45) scale(2,2)" xlink:href="#con_small"></use>
+
+    <!-- center button -->
+    <a href="https://facebook.com/username" ><use class="control-button" id="test" transform="translate(170,95) scale(2,2)" xlink:href="#center"></use></a>
+
+    <!-- lower buttons -->
+    <use class="control-button" transform="translate(215,280) rotate(225) scale(2,2)" xlink:href="#con_small"></use>
+    <use class="control-button" transform="translate(243,310) rotate(225) scale(2,2)" xlink:href="#con_medium"></use>
+    <use class="control-button" transform="translate(271,340) rotate(225) scale(2,2)" xlink:href="#con_big"></use>
+
+</svg>
+</div>
 </body>
