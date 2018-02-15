@@ -10,43 +10,74 @@
 <body class=index onload="onLoad()">
 
 <div class="topnav">
-    <a class="active" href="#home">Home</a>
-    <a href="#control">Control</a>
+    <button class="tablinks" onclick="openCity(event, 'config')">Setup</button>
+    <button class="tablinks" onclick="openCity(event, 'dir_con')">Direct Controll</button>
+    <button class="tablinks" onclick="openCity(event, 'status')">Status</button>
     <div class="topnav-right">
-        <a href="#about">About</a>
+        <button class="tablinks" onclick="openCity(event, 'about')">About</button>
     </div>
 </div>
-
-<h1 class=index>Timelapse Setup</h1>
-<div class=form>
-    <form name="config" action="/index.html" align="left">
-        <table align="center">
-            <tr>
-                <td id="rate">Take image every</td>
-                <td><input type="text" name="fps" value="60" style="width:60px"></td>
-                <td id="secs">seconds</td>
-            </tr>
-            <tr>
-                <td>Length</td>
-                <td><input type="text" name="length" value="300" style="width:60px"></td>
-            </tr>
-            <tr id="speedUp" style="visibility: hidden;">
+<div id="config" class="tabcontent">
+    <h1 class=index>Timelapse Setup</h1>
+    <div class=form>
+        <form name="config" action="/index.html" align="left">
+            <table align="center">
+                <tr>
+                    <td id="rate">Take image every</td>
+                    <td><input type="text" name="fps" value="60" style="width:60px"></td>
+                    <td id="secs">seconds</td>
+                </tr>
+                <tr>
+                    <td>Length</td>
+                    <td><input type="text" name="length" value="300" style="width:60px"></td>
+                </tr>
+                <tr id="speedUp" style="visibility: hidden;">
                     <td>Desired Speedup</td>
                     <td><input type="text" name="speedup" value="30" style="width:60px"></td>
-            </tr>
-            <tr>
-                <td><input type="radio" name="ttype" value="finished" onclick="return enableSpeedup(false)">Finished length</td>
-            </tr>
-            <tr>
-                <td><input type="radio" name="ttype" value="raw" checked="checked" onclick="return enableSpeedup(true)">Raw length</td>
-            </tr>
-            <tr>
-                <td><input type="button" value="Validate" style="height:20px;width:60px" onclick="return validateForm()"></td>
-                <td><input id="start" type="submit" value="Start" style="height:20px;width:60px"></td>
-        </table>
-        <br>
-    </form>
-    <p id="js_msg" style="text-align: left";></p>
+                </tr>
+                <tr>
+                    <td><input type="radio" name="ttype" value="finished" onclick="return enableSpeedup(false)">Finished length</td>
+                </tr>
+                <tr>
+                    <td><input type="radio" name="ttype" value="raw" checked="checked" onclick="return enableSpeedup(true)">Raw length</td>
+                </tr>
+                <tr>
+                    <td><input type="button" value="Validate" style="height:20px;width:60px" onclick="return validateForm()"></td>
+                    <td><input id="start" type="submit" value="Start" style="height:20px;width:60px"></td>
+            </table>
+            <br>
+        </form>
+        <p id="js_msg" style="text-align: left";></p>
+    </div>
+</div>
+<div id="dir_con" class="tabcontent">
+    <div id="hidden_form_container" style="display:none;"></div>
+    <h1 class=index>Direct controll</h1>
+    <div align="center">
+        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="40%"  viewBox="0 0 400 400" xml:space="preserve">
+            <defs>
+                <path id="con_small" d="M4,38 h15 a25,25 0 0,1 25,-25 v-15 a40,40 0 0,0 -40,40 Z" style="fill:#333;fill-opacity: 1;stroke:#333;stroke-width: 3;"/>
+                <path id="con_medium" d="M4,38 h15 a45,45 0 0,1 45,-45 v-15 a60,60 0 0,0 -60,60 Z" style="fill:#333;fill-opacity: 1;stroke:#333;stroke-width: 3"/>
+                <path id="con_big" d="M4,38 h15 a65,65 0 0,1 65,-65 v-15 a80,80 0 0,0 -80,80 Z" style="fill:#333;fill-opacity: 1;stroke:#333;stroke-width: 3"/>
+                <path id="center" d="M4,38 a15,15 0 1,1 30,0 a15,15 0 1,1 -30,0" style="fill:#333;fill-opacity: 1;stroke:#333;stroke-width: 3"/>
+            </defs>
+            <!-- Top buttons -->
+            <use class="control-button" transform="translate(142,0) rotate(45) scale(2,2)" xlink:href="#con_big"></use>
+            <use class="control-button" transform="translate(171,30) rotate(45) scale(2,2)" xlink:href="#con_medium"></use>
+            <use class="control-button" transform="translate(200,60) rotate(45) scale(2,2)" xlink:href="#con_small"></use>
+
+            <!-- center button -->
+            <a href="https://facebook.com/username" ><use class="control-button" id="test" transform="translate(170,95) scale(2,2)" xlink:href="#center"></use></a>
+
+            <!-- lower buttons -->
+            <use class="control-button" transform="translate(215,280) rotate(225) scale(2,2)" xlink:href="#con_small"></use>
+            <use class="control-button" transform="translate(243,310) rotate(225) scale(2,2)" xlink:href="#con_medium"></use>
+            <use class="control-button" transform="translate(271,340) rotate(225) scale(2,2)" xlink:href="#con_big"></use>
+        </svg>
+    </div>
+</div>
+<div id="status" class="tabcontent">
+
 </div>
 </body>
 </html>
